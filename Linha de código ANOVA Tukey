@@ -1,0 +1,41 @@
+######Abrir a pasta onde encontram-se os dados#########
+setwd("C:/Users/leoan/Downloads/Dados_TCC") 
+
+#####Importar os dados via arquivo txt (menos dor de cabeça)####
+Data <- read.table("Dados_TCC.txt", header = TRUE, dec = ".")
+View(Data)
+
+###carregar pacotes####
+library(dplyr)
+library(easyanova)
+library(lmtest)  # Para o teste de Durbin-Watson
+library(car)     # Para o teste de Bartlett
+
+#####teste de Tukey e anova######
+
+# Realizando a ANOVA
+df_selecionado <- Data %>%
+  select(TRAT, DC)
+
+ea1(df_selecionado)
+
+# Verificar os níveis da variável TRAT
+levels(factor(Data$TRAT))
+
+# Converter TRAT em fator
+Data$TRAT <- factor(Data$TRAT)
+
+# Criar o modelo de ANOVA novamente
+modelo <- aov(DC ~ TRAT, data = Data)
+
+# Resumo da ANOVA
+summary(modelo)
+
+# Teste de normalidade dos resíduos
+shapiro.test(modelo$residuals)
+
+# Teste de homogeneidade das variâncias
+bartlett.test(residuals(modelo) ~ TRAT, data = Data)
+
+# Teste de independência dos erros
+dwtest(modelo)
