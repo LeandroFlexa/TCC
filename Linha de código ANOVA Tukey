@@ -25,11 +25,24 @@ levels(factor(Data$TRAT))
 # Converter TRAT em fator
 Data$TRAT <- factor(Data$TRAT)
 
-# Criar o modelo de ANOVA novamente
+# Criar o modelo de ANOVA para DC
 modelo <- aov(DC ~ TRAT, data = Data)
 
 # Resumo da ANOVA
 summary(modelo)
+
+# Calcular a média e o desvio padrão da variável DC
+media_DC <- mean(Data$DC, na.rm = TRUE)
+desvio_DC <- sd(Data$DC , na.rm = TRUE)
+
+#cv <- (sd(Data$DC) / mean(Data$DC)) * 100
+#print(cv)
+
+# Calcular o coeficiente de variação
+CV <- (desvio_DC / media_DC) * 100
+
+# Exibir o resultado
+round(CV, digits = 2)
 
 # Teste de normalidade dos resíduos
 shapiro.test(modelo$residuals)
@@ -39,3 +52,579 @@ bartlett.test(residuals(modelo) ~ TRAT, data = Data)
 
 # Teste de independência dos erros
 dwtest(modelo)
+
+################
+# Criar o modelo de ANOVA para AP
+modelo1 <- aov(AP ~ TRAT, data = Data)
+
+# Calcular a média e o desvio padrão da variável AP
+media_AP <- mean(Data$AP, na.rm = TRUE)
+desvio_AP <- sd(Data$AP, na.rm = TRUE)
+
+# Calcular o coeficiente de variação
+CV <- (desvio_AP / media_AP) * 100
+
+# Exibir o resultado
+round(CV, digits = 2)
+
+# Resumo da ANOVA
+summary(modelo1)
+
+# Teste de normalidade dos resíduos
+shapiro.test(modelo1$residuals)
+
+# Teste de homogeneidade das variâncias
+bartlett.test(residuals(modelo1) ~ TRAT, data = Data)
+
+# Teste de independência dos erros
+dwtest(modelo1)
+
+# Realizando a ANOVA
+df_selecionado1 <- Data %>%
+  select(TRAT, AP)
+
+ea1(df_selecionado1)
+
+####################
+# Criar o modelo de ANOVA para AIE
+modelo2 <- aov(AIE ~ TRAT, data = Data)
+
+# Calcular a média e o desvio padrão da variável AIE
+media_AIE <- mean(Data$AIE, na.rm = TRUE)
+desvio_AIE <- sd(Data$AIE, na.rm = TRUE)
+
+# Calcular o coeficiente de variação
+CV <- (desvio_AIE / media_AIE) * 100
+
+# Exibir o resultado
+round(CV, digits = 2)
+
+# Resumo da ANOVA
+summary(modelo2)
+
+# Teste de normalidade dos resíduos
+shapiro.test(modelo2$residuals)
+
+# Teste de homogeneidade das variâncias
+bartlett.test(residuals(modelo2) ~ TRAT, data = Data)
+
+# Teste de independência dos erros
+dwtest(modelo2)
+
+# Realizando a ANOVA
+df_selecionado2 <- Data %>%
+  select(TRAT, AIE)
+
+ea1(df_selecionado2)
+
+####################
+# Criar o modelo de ANOVA para NFV
+modelo3 <- aov(NFV ~ TRAT, data = Data)
+
+# Calcular a média e o desvio padrão da variável NFV
+media_NFV <- mean(Data$NFV, na.rm = TRUE)
+desvio_NFV <- sd(Data$NFV, na.rm = TRUE)
+
+# Calcular o coeficiente de variação
+CV <- (desvio_NFV / media_NFV) * 100
+
+# Exibir o resultado
+round(CV, digits = 2)
+
+# Resumo da ANOVA
+summary(modelo3)
+
+# Teste de normalidade dos resíduos
+shapiro.test(modelo3$residuals)
+
+# Teste de homogeneidade das variâncias
+bartlett.test(residuals(modelo3) ~ TRAT, data = Data)
+
+# Teste de independência dos erros
+dwtest(modelo3)
+
+# Realizando a ANOVA
+df_selecionado3 <- Data %>%
+  select(TRAT, NFV)
+
+ea1(df_selecionado3)
+
+####################
+# Criar o modelo de ANOVA para NFS
+modelo4 <- aov(NFS ~ TRAT, data = Data)
+
+# Calcular a média e o desvio padrão da variável NFS
+media_NFS <- mean(Data$NFS, na.rm = TRUE)
+desvio_NFS <- sd(Data$NFS, na.rm = TRUE)
+
+# Calcular o coeficiente de variação
+CV <- (desvio_NFS / media_NFS) * 100
+
+# Exibir o resultado
+round(CV, digits = 2)
+
+# Resumo da ANOVA
+summary(modelo4)
+
+# Teste de normalidade dos resíduos
+shapiro.test(modelo4$residuals)
+
+# Teste de homogeneidade das variâncias
+bartlett.test(residuals(modelo4) ~ TRAT, data = Data)
+
+# Teste de independência dos erros
+dwtest(modelo4)
+
+# Realizando a ANOVA
+df_selecionado4 <- Data %>%
+  select(TRAT, NFS)
+
+ea1(df_selecionado4)
+
+####################
+# Criar o modelo de ANOVA para NPT
+modelo5 <- aov(NPT ~ TRAT, data = Data)
+
+# Calcular a média e o desvio padrão da variável NPT
+media_NPT <- mean(Data$NPT, na.rm = TRUE)
+desvio_NPT <- sd(Data$NPT, na.rm = TRUE)
+
+# Calcular o coeficiente de variação
+CV <- (desvio_NPT / media_NPT) * 100
+
+# Exibir o resultado
+round(CV, digits = 2)
+
+# Resumo da ANOVA
+summary(modelo5)
+
+# Teste de normalidade dos resíduos
+shapiro.test(modelo5$residuals)
+
+# Teste de homogeneidade das variâncias
+bartlett.test(residuals(modelo5) ~ TRAT, data = Data)
+
+# Teste de independência dos erros
+dwtest(modelo5)
+
+# Realizando a ANOVA
+df_selecionado5 <- Data %>%
+  select(TRAT, NPT)
+
+ea1(df_selecionado5)
+
+####################
+# Criar o modelo de ANOVA para NTP
+modelo6 <- aov(NTP ~ TRAT, data = Data)
+
+# Calcular a média e o desvio padrão da variável NTP
+media_NTP <- mean(Data$NTP, na.rm = TRUE)
+desvio_NTP <- sd(Data$NTP, na.rm = TRUE)
+
+# Calcular o coeficiente de variação
+CV <- (desvio_NTP / media_NTP) * 100
+
+# Exibir o resultado
+round(CV, digits = 2)
+
+# Resumo da ANOVA
+summary(modelo6)
+
+# Teste de normalidade dos resíduos
+shapiro.test(modelo6$residuals)
+
+# Teste de homogeneidade das variâncias
+bartlett.test(residuals(modelo6) ~ TRAT, data = Data)
+
+# Teste de independência dos erros
+dwtest(modelo6)
+
+# Realizando a ANOVA
+df_selecionado6 <- Data %>%
+  select(TRAT, NTP)
+
+ea1(df_selecionado6)
+
+####################
+# Criar o modelo de ANOVA para PPT
+modelo7 <- aov(PPT ~ TRAT, data = Data)
+
+# Calcular a média e o desvio padrão da variável PPT
+media_PPT <- mean(Data$PPT, na.rm = TRUE)
+desvio_PPT <- sd(Data$PPT, na.rm = TRUE)
+
+# Calcular o coeficiente de variação
+CV <- (desvio_PPT / media_PPT) * 100
+
+# Exibir o resultado
+round(CV, digits = 2)
+
+# Resumo da ANOVA
+summary(modelo7)
+
+# Teste de normalidade dos resíduos
+shapiro.test(modelo7$residuals)
+
+# Teste de homogeneidade das variâncias
+bartlett.test(residuals(modelo7) ~ TRAT, data = Data)
+
+# Teste de independência dos erros
+dwtest(modelo7)
+
+# Realizando a ANOVA
+df_selecionado7 <- Data %>%
+  select(TRAT, PPT)
+
+ea1(df_selecionado7)
+
+####################
+# Criar o modelo de ANOVA para Espha
+modelo8 <- aov(Espha ~ TRAT, data = Data)
+
+# Calcular a média e o desvio padrão da variável Espha
+media_PPT <- mean(Data$PPT, na.rm = TRUE)
+desvio_PPT <- sd(Data$PPT, na.rm = TRUE)
+
+# Calcular o coeficiente de variação
+CV <- (desvio_PPT / media_PPT) * 100
+
+# Exibir o resultado
+round(CV, digits = 2)
+
+# Resumo da ANOVA
+summary(modelo8)
+
+# Teste de normalidade dos resíduos
+shapiro.test(modelo8$residuals)
+
+# Teste de homogeneidade das variâncias
+bartlett.test(residuals(modelo8) ~ TRAT, data = Data)
+
+# Teste de independência dos erros
+dwtest(modelo8)
+
+# Realizando a ANOVA
+df_selecionado8 <- Data %>%
+  select(TRAT, Espha)
+
+ea1(df_selecionado8)
+
+####################
+# Criar o modelo de ANOVA para ESP
+modelo9 <- aov(ESP ~ TRAT, data = Data)
+
+# Calcular a média e o desvio padrão da variável ESP
+media_ESP <- mean(Data$ESP, na.rm = TRUE)
+desvio_ESP <- sd(Data$ESP, na.rm = TRUE)
+
+# Calcular o coeficiente de variação
+CV <- (desvio_ESP / media_ESP) * 100
+
+# Exibir o resultado
+round(CV, digits = 2)
+
+# Resumo da ANOVA
+summary(modelo9)
+
+# Teste de normalidade dos resíduos
+shapiro.test(modelo9$residuals)
+
+# Teste de homogeneidade das variâncias
+bartlett.test(residuals(modelo9) ~ TRAT, data = Data)
+
+# Teste de independência dos erros
+dwtest(modelo9)
+
+# Realizando a ANOVA
+df_selecionado9 <- Data %>%
+  select(TRAT, ESP)
+
+ea1(df_selecionado9)
+
+####################
+# Criar o modelo de ANOVA para PES
+modelo10 <- aov(PES ~ TRAT, data = Data)
+
+# Calcular a média e o desvio padrão da variável PES
+media_PES <- mean(Data$PES, na.rm = TRUE)
+desvio_PES <- sd(Data$PES, na.rm = TRUE)
+
+# Calcular o coeficiente de variação
+CV <- (desvio_PES / media_PES) * 100
+
+# Exibir o resultado
+round(CV, digits = 2)
+
+# Resumo da ANOVA
+summary(modelo10)
+
+# Teste de normalidade dos resíduos
+shapiro.test(modelo10$residuals)
+
+# Teste de homogeneidade das variâncias
+bartlett.test(residuals(modelo10) ~ TRAT, data = Data)
+
+# Teste de independência dos erros
+dwtest(modelo10)
+
+# Realizando a ANOVA
+df_selecionado10 <- Data %>%
+  select(TRAT, PES)
+
+ea1(df_selecionado10)
+
+####################
+# Criar o modelo de ANOVA para PS
+modelo11 <- aov(PS ~ TRAT, data = Data)
+
+# Calcular a média e o desvio padrão da variável PS
+media_PS <- mean(Data$PS, na.rm = TRUE)
+desvio_PS <- sd(Data$PS, na.rm = TRUE)
+
+# Calcular o coeficiente de variação
+CV <- (desvio_PS / media_PS) * 100
+
+# Exibir o resultado
+round(CV, digits = 2)
+
+# Resumo da ANOVA
+summary(modelo11)
+
+# Teste de normalidade dos resíduos
+shapiro.test(modelo11$residuals)
+
+# Teste de homogeneidade das variâncias
+bartlett.test(residuals(modelo11) ~ TRAT, data = Data)
+
+# Teste de independência dos erros
+dwtest(modelo11)
+
+# Realizando a ANOVA
+df_selecionado11 <- Data %>%
+  select(TRAT, PS)
+
+ea1(df_selecionado11)
+
+####################
+# Criar o modelo de ANOVA para PSR
+modelo12 <- aov(PSR ~ TRAT, data = Data)
+
+# Calcular a média e o desvio padrão da variável PSR
+media_PSR <- mean(Data$PSR, na.rm = TRUE)
+desvio_PSR <- sd(Data$PSR, na.rm = TRUE)
+
+# Calcular o coeficiente de variação
+CV <- (desvio_PSR / media_PSR) * 100
+
+# Exibir o resultado
+round(CV, digits = 2)
+
+# Resumo da ANOVA
+summary(modelo12)
+
+# Teste de normalidade dos resíduos
+shapiro.test(modelo12$residuals)
+
+# Teste de homogeneidade das variâncias
+bartlett.test(residuals(modelo12) ~ TRAT, data = Data)
+
+# Teste de independência dos erros
+dwtest(modelo12)
+
+# Realizando a ANOVA
+df_selecionado12 <- Data %>%
+  select(TRAT, PSR)
+
+ea1(df_selecionado12)
+
+####################
+# Criar o modelo de ANOVA para CE
+modelo13 <- aov(CE ~ TRAT, data = Data)
+
+# Calcular a média e o desvio padrão da variável CE
+media_CE <- mean(Data$CE, na.rm = TRUE)
+desvio_CE <- sd(Data$CE, na.rm = TRUE)
+
+# Calcular o coeficiente de variação
+CV <- (desvio_CE / media_CE) * 100
+
+# Exibir o resultado
+round(CV, digits = 2)
+
+# Resumo da ANOVA
+summary(modelo13)
+
+# Teste de normalidade dos resíduos
+shapiro.test(modelo13$residuals)
+
+# Teste de homogeneidade das variâncias
+bartlett.test(residuals(modelo13) ~ TRAT, data = Data)
+
+# Teste de independência dos erros
+dwtest(modelo13)
+
+# Realizando a ANOVA
+df_selecionado13 <- Data %>%
+  select(TRAT, CE)
+
+ea1(df_selecionado13)
+
+####################
+# Criar o modelo de ANOVA para DE
+modelo14 <- aov(DE ~ TRAT, data = Data)
+
+# Calcular a média e o desvio padrão da variável DE
+media_DE <- mean(Data$DE, na.rm = TRUE)
+desvio_DE <- sd(Data$DE, na.rm = TRUE)
+
+# Calcular o coeficiente de variação
+CV <- (desvio_DE / media_DE) * 100
+
+# Exibir o resultado
+round(CV, digits = 2)
+
+# Resumo da ANOVA
+summary(modelo14)
+
+# Teste de normalidade dos resíduos
+shapiro.test(modelo14$residuals)
+
+# Teste de homogeneidade das variâncias
+bartlett.test(residuals(modelo14) ~ TRAT, data = Data)
+
+# Teste de independência dos erros
+dwtest(modelo14)
+
+# Realizando a ANOVA
+df_selecionado15 <- Data %>%
+  select(TRAT, DE)
+
+ea1(df_selecionado14)
+
+####################
+# Criar o modelo de ANOVA para NFG
+modelo15 <- aov(NFG ~ TRAT, data = Data)
+
+# Calcular a média e o desvio padrão da variável CE
+media_NFG <- mean(Data$NFG, na.rm = TRUE)
+desvio_NFG <- sd(Data$NFG, na.rm = TRUE)
+
+# Calcular o coeficiente de variação
+CV <- (desvio_NFG / media_NFG) * 100
+
+# Exibir o resultado
+round(CV, digits = 2)
+
+# Resumo da ANOVA
+summary(modelo15)
+
+# Teste de normalidade dos resíduos
+shapiro.test(modelo15$residuals)
+
+# Teste de homogeneidade das variâncias
+bartlett.test(residuals(modelo15) ~ TRAT, data = Data)
+
+# Teste de independência dos erros
+dwtest(modelo15)
+
+# Realizando a ANOVA
+df_selecionado15 <- Data %>%
+  select(TRAT, NFG)
+
+ea1(df_selecionado15)
+
+####################
+# Criar o modelo de ANOVA para PMG
+modelo16 <- aov(PMG ~ TRAT, data = Data)
+
+# Calcular a média e o desvio padrão da variável PMG
+media_PMG <- mean(Data$PMG, na.rm = TRUE)
+desvio_PMG <- sd(Data$PMG, na.rm = TRUE)
+
+# Calcular o coeficiente de variação
+CV <- (desvio_PMG / media_PMG) * 100
+
+# Exibir o resultado
+round(CV, digits = 2)
+
+# Resumo da ANOVA
+summary(modelo16)
+
+# Teste de normalidade dos resíduos
+shapiro.test(modelo16$residuals)
+
+# Teste de homogeneidade das variâncias
+bartlett.test(residuals(modelo16) ~ TRAT, data = Data)
+
+# Teste de independência dos erros
+dwtest(modelo16)
+
+# Realizando a ANOVA
+df_selecionado16 <- Data %>%
+  select(TRAT, PMG)
+
+ea1(df_selecionado16)
+
+####################
+# Criar o modelo de ANOVA para PROD
+modelo17 <- aov(PROD ~ TRAT, data = Data)
+
+# Calcular a média e o desvio padrão da variável PROD
+media_PROD <- mean(Data$PROD, na.rm = TRUE)
+desvio_PROD <- sd(Data$PROD, na.rm = TRUE)
+
+# Calcular o coeficiente de variação
+CV <- (desvio_PROD / media_PROD) * 100
+
+# Exibir o resultado
+round(CV, digits = 2)
+
+# Resumo da ANOVA
+summary(modelo17)
+
+# Teste de normalidade dos resíduos
+shapiro.test(modelo17$residuals)
+
+# Teste de homogeneidade das variâncias
+bartlett.test(residuals(modelo17) ~ TRAT, data = Data)
+
+# Teste de independência dos erros
+dwtest(modelo17)
+
+# Realizando a ANOVA
+df_selecionado17 <- Data %>%
+  select(TRAT, PROD)
+
+ea1(df_selecionado17)
+
+####################
+# Criar o modelo de ANOVA para PRODP
+modelo18 <- aov(PRODP ~ TRAT, data = Data)
+
+# Calcular a média e o desvio padrão da variável PRODP
+media_PRODP <- mean(Data$PRODP, na.rm = TRUE)
+desvio_PRODP <- sd(Data$PRODP, na.rm = TRUE)
+
+# Calcular o coeficiente de variação
+CV <- (desvio_PRODP / media_PRODP) * 100
+
+# Exibir o resultado
+round(CV, digits = 2)
+
+# Resumo da ANOVA
+summary(modelo18)
+
+# Teste de normalidade dos resíduos
+shapiro.test(modelo18$residuals)
+
+# Teste de homogeneidade das variâncias
+bartlett.test(residuals(modelo18) ~ TRAT, data = Data)
+
+# Teste de independência dos erros
+dwtest(modelo18)
+
+# Realizando a ANOVA
+df_selecionado18 <- Data %>%
+  select(TRAT, PRODP)
+
+ea1(df_selecionado18)
