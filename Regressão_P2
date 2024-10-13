@@ -1,0 +1,268 @@
+######Abrir a pasta onde encontram-se os dados#########
+setwd("C:/Users/leoan/Downloads/Dados_TCC") 
+
+#####Importar os dados via arquivo txt (menos dor de cabeça)####
+Data <- read.table("Dados_regressao.txt", header = TRUE, dec = ".")
+View(Data)
+
+#carregando pacaotes#
+library(ExpDes.pt)
+library(lme4)
+library(car)  # Para VIF e diagnóstico
+library(lmtest) # Para Breusch-Pagan
+library(readxl)
+library(ggplot2)
+library(dplyr)
+library(ggpubr)
+library(patchwork)
+
+###colocando o trtamento como nível###
+levels(factor(Data$TRAT))
+
+# Converter TRAT em fator
+Data$TRAT <- factor(Data$TRAT)
+
+# Ajuste da regressão linear simples para a variável CE (comportamento linear)
+quadratic_PSR <- lm(PSR ~ TRAT + I(TRAT^2), data = Data)
+
+# Ajuste da regressão quadrática para a variável DE (comportamento quadrático)
+quadratic_ESP <- lm(ESP ~ TRAT + I(TRAT^2), data = Data)
+
+# Ajuste da regressão quadrática para a variável PMG (comportamento quadrático)
+quadratic_PROD <- lm(PROD ~ TRAT + I(TRAT^2), data = Data)
+
+# Ajuste da regressão quadrática para a variável NFG (comportamento linear)
+quadratic_PRODP <- lm(PRODP ~ TRAT + I(TRAT^2), data = Data)
+
+# Exibir os resultados da ANOVA
+anova(quadratic_PSR)
+anova(quadratic_ESP)
+anova(quadratic_PROD)
+anova(quadratic_PRODP)
+
+# Resumo dos modelos
+summary(quadratic_PSR)
+summary(quadratic_ESP)
+summary(quadratic_PROD)
+summary(quadratic_PRODP)
+
+# Verificação dos pressupostos dos modelos
+
+# 1. Resíduos vs Ajustados (Homocedasticidade)
+par(mfrow = c(2, 2))  # Para visualizar múltiplos gráficos
+plot(quadratic_PSR)
+plot(quadratic_ESP)
+plot(quadratic_PROD)
+plot(quadratic_PRODP)
+par(mfrow = c(1, 1))
+
+# 2. Teste de normalidade dos resíduos (Shapiro-Wilk)
+shapiro.test(residuals(quadratic_PSR))
+shapiro.test(residuals(quadratic_ESP))
+shapiro.test(residuals(quadratic_PROD))
+shapiro.test(residuals(quadratic_PRODP))
+
+# 3. Teste de homocedasticidade (Teste de Breusch-Pagan)
+bptest(quadratic_PSR)
+bptest(quadratic_ESP)
+bptest(quadratic_PROD)
+bptest(quadratic_PRODP)
+
+# 5. Análise de outliers e pontos influentes (Distância de Cook)
+cooksd_quadratic_PSR <- cooks.distance(quadratic_PSR)
+cooksd_quadratic_ESP <- cooks.distance(quadratic_ESP)
+cooksd_quadratic_PROD <- cooks.distance(quadratic_PROD)
+cooksd_quadratic_PRODP <- cooks.distance(quadratic_PRODP)
+
+
+plot(cooksd_quadratic_PSR, pch = "*", cex = 2, main = "Distância de Cook - Modelo Quadrático")
+abline(h = 4/(nrow(Data)-length(coef(quadratic_PSR))), col = "red")  # Limite de influência
+
+plot(cooksd_quadratic_ESP, pch = "*", cex = 2, main = "Distância de Cook - Modelo Quadrático")
+abline(h = 4/(nrow(Data)-length(coef(quadratic_ESP))), col = "red")  # Limite de influência
+
+plot(cooksd_quadratic_PROD, pch = "*", cex = 2, main = "Distância de Cook - Modelo Quadrático")
+abline(h = 4/(nrow(Data)-length(coef(quadratic_PROD))), col = "red")  # Limite de influência
+
+plot(cooksd_quadratic_PRODP, pch = "*", cex = 2, main = "Distância de Cook - Modelo Linear")
+abline(h = 4/(nrow(Data)-length(coef(quadratic_PRODP))), col = "red")  # Limite de influência
+
+##############################################################################################
+############################CE###############################
+# Calcular média e erro padrão para cada nível de TRAT
+summary_data_PSR <- Data %>%
+  group_by(TRAT) %>%
+  summarise(
+    media_PSR = mean(PSR, na.rm = TRUE),
+    erro_padrao = sd(PSR, na.rm = TRUE) / sqrt(n())
+  )
+
+
+# Prever valores ajustados e intervalos de confiança
+predicoes <- predict(quadratic_PSR, newdata = summary_data_PSR, interval = "confidence")
+summary_data_PSR$fit <- predicoes[, "fit"]
+summary_data_PSR$lwr <- predicoes[, "lwr"]
+summary_data_PSR$upr <- predicoes[, "upr"]
+
+############################DE###############################
+# Calcular média e erro padrão para cada nível de TRAT
+summary_data_ESP <- Data %>%
+  group_by(TRAT) %>%
+  summarise(
+    media_ESP = mean(ESP, na.rm = TRUE),
+    erro_padrao = sd(ESP, na.rm = TRUE) / sqrt(n())
+  )
+
+# Prever valores ajustados e intervalos de confiança
+predicoes <- predict(quadratic_ESP, newdata = summary_data_ESP, interval = "confidence")
+summary_data_ESP$fit <- predicoes[, "fit"]
+summary_data_ESP$lwr <- predicoes[, "lwr"]
+summary_data_ESP$upr <- predicoes[, "upr"]
+
+##############################PMG#################################
+# Calcular média e erro padrão para cada nível de TRAT
+summary_data_PROD <- Data %>%
+  group_by(TRAT) %>%
+  summarise(
+    media_PROD = mean(PROD, na.rm = TRUE),
+    erro_padrao = sd(PROD, na.rm = TRUE) / sqrt(n())
+  )
+
+# Prever valores ajustados e intervalos de confiança
+predicoes <- predict(quadratic_PROD, newdata = summary_data_PROD, interval = "confidence")
+summary_data_PROD$fit <- predicoes[, "fit"]
+summary_data_PROD$lwr <- predicoes[, "lwr"]
+summary_data_PROD$upr <- predicoes[, "upr"]
+
+
+##############################NFG#################################
+# Calcular média e erro padrão para cada nível de TRAT
+summary_data_PRODP <- Data %>%
+  group_by(TRAT) %>%
+  summarise(
+    media_PRODP = mean(PRODP, na.rm = TRUE),
+    erro_padrao = sd(PRODP, na.rm = TRUE) / sqrt(n())
+  )
+
+
+# Prever valores ajustados e intervalos de confiança
+predicoes <- predict(linear_PRODP, newdata = summary_data_PRODP, interval = "confidence")
+summary_data_PRODP$fit <- predicoes[, "fit"]
+summary_data_PRODP$lwr <- predicoes[, "lwr"]
+summary_data_PRODP$upr <- predicoes[, "upr"]
+
+###########################Apresentação gráfica#################################
+
+# Definir os valores específicos de TRAT
+summary_data_PS$TRAT <- c(25156, 33007, 40625, 48242)
+summary_data_ESP$TRAT <- c(25156, 33007, 40625, 48242)
+summary_data_PROD$TRAT <- c(25156, 33007, 40625, 48242)
+summary_data_PRODP$TRAT <- c(25156, 33007, 40625, 48242)
+
+
+# Recriar o gráfico G1 com os valores do eixo X ajustados
+G1 <- ggplot(summary_data_PSR, aes(x = TRAT, y = media_PSR)) + 
+  geom_point(size = 3, color = "black") +
+  geom_errorbar(aes(ymin = media_PSR - erro_padrao, ymax = media_PSR + erro_padrao), 
+                width = 1000, color = "black", size = 0.5) +
+  geom_smooth(method = "lm", formula = y ~ poly(x, 2),  
+              color = "black", se = FALSE, size = 0.7) +
+  theme_classic() +
+  labs(x = expression("População de plantas ha"^{-1}), 
+       y = "Pesos de Sabugos*", 
+       title = "A") +
+  annotate("text", x = 35000, y = 0.70, label = expression("y = -56,0741* + 0,0043x** - 6e-8x"^{2}*"**"), size = 5, family = "serif") +  # Equação de regressão genérica
+  annotate("text", x = 35000, y = 0.692, label = expression("R"^{2}*" = 0,7298"), size = 5, family = "serif") +  # Ajuste do R² (substitua 'valor' pelo R² real)
+  scale_x_continuous(breaks = c(25156, 33007, 40625, 48242)) + # Ajuste do eixo X
+  theme(
+    text = element_text(size = 16, family = "serif", color = "black"),
+    axis.title.x = element_text(size = 14, color = "black"),
+    axis.title.y = element_text(size = 14, color = "black"),
+    axis.text.x = element_text(color = "black"),
+    axis.text.y = element_text(color = "black"),
+    plot.title = element_text(size = 16, face = "bold", color = "black")
+  )
+
+# Recriar o gráfico G2 com os valores do eixo X ajustados
+G2 <- ggplot(summary_data_ESP, aes(x = TRAT, y = media_ESP)) +
+  geom_point(size = 3, color = "black") +
+  geom_errorbar(aes(ymin = media_ESP - erro_padrao, ymax = media_ESP + erro_padrao), 
+                width = 1000, color = "black", size = 0.5) +
+  geom_smooth(method = "lm", formula = y ~ poly(x, 2), 
+              color = "black", se = FALSE, size = 0.7) +
+  theme_classic() +
+  labs(x = expression("População de plantas ha"^{-1}), 
+       y = expression("Número de Espigas (espiga planta "^{-1}*")"), 
+       title = "B") +
+  annotate("text", x = 35000, y = 0.5, label = expression("y = -0,2669"^{ns}*" + 5e-5x* - 7e-10x"^{2}*"*"), size = 5, family = "serif") +  
+  annotate("text", x = 35000, y = 0.489, label = expression("R"^{2}*" = 0,6874"), size = 5, family = "serif") + 
+  scale_x_continuous(breaks = c(25156, 33007, 40625, 48242)) + # Ajuste do eixo X
+  theme(
+    text = element_text(size = 16, family = "serif", color = "black"),
+    axis.title.x = element_text(size = 14, color = "black"),
+    axis.title.y = element_text(size = 14, color = "black"),
+    axis.text.x = element_text(color = "black"),
+    axis.text.y = element_text(color = "black"),
+    plot.title = element_text(size = 16, face = "bold", color = "black")
+  )
+
+# Recriar o gráfico G3 com os valores do eixo X ajustados
+G3 <- ggplot(summary_data_PROD, aes(x = TRAT, y = media_PROD)) +
+  geom_point(size = 3, color = "black") +
+  geom_errorbar(aes(ymin = media_PROD - erro_padrao, ymax = media_PROD + erro_padrao), 
+                width = 1000, color = "black", size = 0.5) +
+  geom_smooth(method = "lm", formula = y ~ poly(x, 2), 
+              color = "black", se = FALSE, size = 0.7) +
+  theme_classic() +
+  labs(x = expression("População de plantas ha"^{-1}), 
+       y = expression("Produção de Grãos (kg ha"^{-1}*")"), 
+       title = "C") +
+  annotate("text", x = 35000, y = 950, label = expression("y = -6940,588** + 0,4786x** - 6e-6x"^{2}*"**"), size = 5, family = "serif") +  
+  annotate("text", x = 35000, y = 850, label = expression("R"^{2}*" = 0,5516"), size = 5, family = "serif") +
+  scale_x_continuous(breaks = c(25156, 33007, 40625, 48242)) + # Ajuste do eixo X
+  theme(
+    text = element_text(size = 16, family = "serif", color = "black"),
+    axis.title.x = element_text(size = 14, color = "black"),
+    axis.title.y = element_text(size = 14, color = "black"),
+    axis.text.x = element_text(color = "black"),
+    axis.text.y = element_text(color = "black"),
+    plot.title = element_text(size = 16, face = "bold", color = "black")
+  )
+
+# Recriar o gráfico G4 com os valores do eixo X ajustados
+G4 <- ggplot(summary_data_PRODP, aes(x = TRAT, y = media_PRODP)) +
+  geom_point(size = 3, color = "black") +
+  geom_errorbar(aes(ymin = media_PRODP - erro_padrao, ymax = media_PRODP + erro_padrao), 
+                width = 1000, color = "black", size = 0.5) +
+  geom_smooth(method = "lm", formula = y ~ poly(x, 2), 
+              color = "black", se = FALSE, size = 0.7) +
+  theme_classic() +
+  labs(x = expression("População de plantas ha"^{-1}), 
+       y = expression("Número de Fileiras de Grãos (kg planta "^{-1}*")"), 
+       title = "D") +
+  annotate("text", x = 35000, y = 30.0, label = expression("y = -162,913** + 0,013x** - 2e-7x"^{2}*"**"), size = 5, family = "serif") +  
+  annotate("text", x = 35000, y = 27.0, label = expression("R"^{2}*" = 0,4856"), size = 5, family = "serif") +  
+  scale_x_continuous(breaks = c(25156, 33007, 40625, 48242)) + 
+  theme(
+    text = element_text(size = 16, family = "serif", color = "black"),
+    axis.title.x = element_text(size = 14, color = "black"),
+    axis.title.y = element_text(size = 14, color = "black"),
+    axis.text.x = element_text(color = "black"),
+    axis.text.y = element_text(color = "black"),
+    plot.title = element_text(size = 16, face = "bold", color = "black")
+  )
+
+# Exibir os gráficos
+print(G1)
+print(G2)
+print(G3)
+print(G4)
+
+# Combine os gráficos em uma disposição de 2x2
+combined_plot <- (G1 | G2) / (G3 | G4)  # 2 gráficos lado a lado por linha
+
+# Salvar a figura como um arquivo PNG
+ggsave("graficos_combinados_2x2_P2.png", combined_plot, width = 12, height = 10)
+
+# Também é possível salvar como PDF, se preferir:
+ggsave("graficos_combinados_2x2_P.pdf", combined_plot, width = 12, height = 10)
